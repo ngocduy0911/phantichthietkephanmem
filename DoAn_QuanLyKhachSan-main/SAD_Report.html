@@ -1,0 +1,974 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Báo cáo Phân tích & Thiết kế Hệ thống Quản lý Khách sạn</title>
+    <style>
+        :root {
+            --primary: #0b5fff;
+            --secondary: #1f2937;
+            --accent: #f97316;
+            --border: #d1d5db;
+            --muted: #6b7280;
+            --bg: #ffffff;
+            --table-header: #111827;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: var(--secondary);
+            background: #f8fafc;
+        }
+
+        .page {
+            background: var(--bg);
+            margin: 0 auto;
+            padding: 3rem 4rem;
+            max-width: 900px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        .page + .page {
+            margin-top: 2rem;
+        }
+
+        .cover-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .cover-page h1 {
+            font-size: 1.75rem;
+            letter-spacing: 0.2rem;
+            margin: 0;
+        }
+
+        .cover-page h2 {
+            font-size: 1.3rem;
+            margin: 0;
+        }
+
+        .cover-box {
+            border: 2px solid var(--secondary);
+            padding: 2rem 3rem;
+            width: 100%;
+            max-width: 540px;
+            margin: 2rem 0;
+        }
+
+        .cover-box h3 {
+            margin: 0 0 1rem;
+            font-size: 1.1rem;
+            letter-spacing: 0.1rem;
+        }
+
+        .cover-box h4 {
+            margin: 0;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            color: var(--primary);
+        }
+
+        .meta-list {
+            width: 100%;
+            max-width: 540px;
+            text-align: left;
+            margin: 0 auto;
+        }
+
+        .meta-list p {
+            margin: 0.3rem 0;
+            font-size: 1rem;
+        }
+
+        .meta-list span.placeholder {
+            display: inline-block;
+            min-width: 220px;
+            border-bottom: 1px dotted var(--border);
+            margin-left: 0.5rem;
+        }
+
+        h2.section-title {
+            margin-top: 0;
+            font-size: 1.6rem;
+            color: var(--primary);
+            padding-bottom: 0.4rem;
+            border-bottom: 3px solid rgba(11, 95, 255, 0.25);
+        }
+
+        h3.sub-title {
+            font-size: 1.25rem;
+            margin-top: 2rem;
+            color: var(--secondary);
+        }
+
+        h4.sub-sub-title {
+            font-size: 1.1rem;
+            margin-top: 1.3rem;
+            color: var(--secondary);
+        }
+
+        p {
+            margin: 0.5rem 0;
+            text-align: justify;
+        }
+
+        ul, ol {
+            margin: 0.5rem 0 0.5rem 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.4rem;
+        }
+
+        .toc {
+            background: rgba(11, 95, 255, 0.06);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(11, 95, 255, 0.12);
+        }
+
+        .toc ol {
+            margin-left: 1.2rem;
+        }
+
+        .toc a {
+            color: var(--secondary);
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            color: var(--primary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+        }
+
+        table thead th {
+            background: var(--table-header);
+            color: #fff;
+            padding: 0.7rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        table tbody td {
+            border: 1px solid var(--border);
+            padding: 0.7rem;
+            vertical-align: top;
+        }
+
+        table tbody tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        .requirement-id {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            background: rgba(11, 95, 255, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .badge.high {
+            background: rgba(239, 68, 68, 0.12);
+            color: #b91c1c;
+        }
+
+        .badge.medium {
+            background: rgba(249, 115, 22, 0.12);
+            color: #c2410c;
+        }
+
+        .badge.low {
+            background: rgba(34, 197, 94, 0.12);
+            color: #15803d;
+        }
+
+        figure {
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        figure img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.15);
+        }
+
+        figure figcaption {
+            margin-top: 0.6rem;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .note {
+            background: rgba(249, 115, 22, 0.08);
+            border-left: 4px solid var(--accent);
+            padding: 0.75rem 1rem;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+            color: #7c2d12;
+        }
+
+        .code-block {
+            background: #111827;
+            color: #f9fafb;
+            padding: 1rem;
+            border-radius: 10px;
+            font-family: "Fira Code", monospace;
+            font-size: 0.88rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .grid-two {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .metric-card {
+            background: #fff7ed;
+            border: 1px solid rgba(249, 115, 22, 0.2);
+            padding: 1rem;
+            border-radius: 12px;
+        }
+
+        .metric-card h4 {
+            margin: 0 0 0.6rem;
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+
+        footer {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        @media print {
+            body {
+                background: var(--bg);
+            }
+
+            .page {
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+                padding: 2.5rem;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+
+            .page-break {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="cover-page">
+            <h1>ĐẠI HỌC PHENIKAA</h1>
+            <h2>TRƯỜNG CÔNG NGHỆ THÔNG TIN PHENIKAA</h2>
+
+            <div class="cover-box">
+                <h3>HỌC PHẦN: PHÂN TÍCH & THIẾT KẾ PHẦN MỀM</h3>
+                <h4>ĐỒ ÁN: HỆ THỐNG QUẢN LÝ KHÁCH SẠN</h4>
+            </div>
+
+            <div class="meta-list">
+                <p>Giảng viên hướng dẫn:<span class="placeholder"></span></p>
+                <p>Nhóm thực hiện:<span class="placeholder"></span></p>
+                <p>MSSV:<span class="placeholder"></span></p>
+                <p>Lớp tín chỉ:<span class="placeholder"></span></p>
+            </div>
+
+            <p style="margin-top: 3rem;">Hà Nội, tháng 10 năm 2025</p>
+        </div>
+    </div>
+
+    <div class="page">
+        <section id="muc-luc" class="toc">
+            <h2 class="section-title" style="margin-bottom: 0.8rem;">Mục lục</h2>
+            <ol>
+                <li><a href="#yeu-cau">Yêu cầu (Requirements)</a></li>
+                <li><a href="#phan-tich-usecase">Phân tích trường hợp sử dụng</a></li>
+                <li><a href="#thiet-ke">Thiết kế</a></li>
+                <li><a href="#cai-dat">Cài đặt</a></li>
+                <li><a href="#ket-luan">Kết luận</a></li>
+                <li><a href="#tai-lieu-tham-khao">Tài liệu tham khảo</a></li>
+                <li><a href="#phu-luc">Phụ lục</a></li>
+            </ol>
+        </section>
+    </div>
+
+    <div class="page" id="yeu-cau">
+        <h2 class="section-title">1. YÊU CẦU (REQUIREMENTS)</h2>
+
+        <h3 class="sub-title" id="dat-van-de">1.1 Đặt vấn đề (Problem Statement)</h3>
+
+        <h4 class="sub-sub-title">1.1.1 Bối cảnh</h4>
+        <p>Hotel Management System được xây dựng nhằm số hóa nghiệp vụ vận hành khách sạn cỡ vừa. Tại thời điểm khảo sát, phần lớn quy trình được thực hiện trên bảng tính, gây khó khăn trong việc kiểm soát trạng thái phòng, lịch sử khách và doanh thu. Ứng dụng Node.js/Express kết hợp giao diện EJS này cung cấp nền tảng tập trung hóa dữ liệu, giảm phụ thuộc vào thao tác thủ công.</p>
+
+        <h4 class="sub-sub-title">1.1.2 Mục tiêu</h4>
+        <ul>
+            <li>Tự động hóa các tác vụ chính: quản lý phòng, đặt phòng, khách hàng, hóa đơn và báo cáo.</li>
+            <li>Đảm bảo toàn bộ thông tin nghiệp vụ được lưu trữ nhất quán trong cơ sở dữ liệu MySQL.</li>
+            <li>Cung cấp dashboard tổng quan để nhà quản lý ra quyết định nhanh chóng.</li>
+            <li>Hỗ trợ truy xuất lịch sử giao dịch và trạng thái phòng theo thời gian thực.</li>
+        </ul>
+
+        <h4 class="sub-sub-title">1.1.3 Người dùng mục tiêu</h4>
+        <ul>
+            <li><strong>Nhân viên lễ tân:</strong> thao tác check-in/check-out, tạo đặt phòng, cập nhật thông tin khách hàng.</li>
+            <li><strong>Quản lý khách sạn:</strong> giám sát tình trạng phòng, phê duyệt đặt phòng, xem báo cáo doanh thu.</li>
+            <li><strong>Ban giám đốc:</strong> theo dõi các chỉ số tổng hợp (sử dụng dashboard, báo cáo doanh thu theo thời gian).</li>
+            <li><strong>Nhân viên kế toán:</strong> lập hóa đơn, ghi nhận thanh toán, đối soát doanh thu.</li>
+        </ul>
+
+        <h4 class="sub-sub-title">1.1.4 Lợi ích khi sử dụng hệ thống</h4>
+        <ul>
+            <li>Giảm sai sót nhờ trạng thái phòng và booking được cập nhật tự động (Room.getAvailableRooms, Booking.checkIn/checkOut).</li>
+            <li>Bảo mật thông tin với cơ chế đăng nhập và mã hóa mật khẩu bằng bcrypt.</li>
+            <li>Tăng tính minh bạch của doanh thu với báo cáo ngày/tháng từ Invoice.getRevenueByDateRange.</li>
+            <li>Cải thiện trải nghiệm người dùng với giao diện EJS thống nhất, thông báo trạng thái rõ ràng.</li>
+        </ul>
+
+        <h4 class="sub-sub-title">1.1.5 Phạm vi dự án</h4>
+        <div class="grid-two">
+            <div class="metric-card">
+                <h4>Trong phạm vi</h4>
+                <ul>
+                    <li>Quản lý phòng và loại phòng.</li>
+                    <li>Quản lý khách hàng, đặt phòng, dịch vụ phát sinh.</li>
+                    <li>Lập hóa đơn, ghi nhận thanh toán, báo cáo doanh thu.</li>
+                    <li>Phân quyền cơ bản theo vai trò (admin/manager/receptionist).</li>
+                </ul>
+            </div>
+            <div class="metric-card">
+                <h4>Ngoài phạm vi</h4>
+                <ul>
+                    <li>Đặt phòng trực tuyến từ khách bên ngoài.</li>
+                    <li>Tích hợp cổng thanh toán điện tử.</li>
+                    <li>Quản lý tồn kho, nhân sự, bảo trì thiết bị.</li>
+                    <li>Ứng dụng di động hoặc API công khai.</li>
+                </ul>
+            </div>
+        </div>
+        <h3 class="sub-title" id="glossary">1.2 Thuật ngữ (Glossary)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Thuật ngữ</th>
+                    <th>Định nghĩa</th>
+                    <th>Nơi xuất hiện</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Booking</strong></td>
+                    <td>Giao dịch đặt phòng giữa khách hàng và khách sạn.</td>
+                    <td>src/models/Booking.js, bookings/*</td>
+                </tr>
+                <tr>
+                    <td><strong>Check-in</strong></td>
+                    <td>Hành động xác nhận khách nhận phòng, chuyển trạng thái phòng sang <em>occupied</em>.</td>
+                    <td>Booking.checkIn, bookings/show.ejs</td>
+                </tr>
+                <tr>
+                    <td><strong>Check-out</strong></td>
+                    <td>Quy trình trả phòng, lập hóa đơn và hoàn tất thanh toán.</td>
+                    <td>Booking.checkOut, InvoiceController</td>
+                </tr>
+                <tr>
+                    <td><strong>Room type</strong></td>
+                    <td>Phân loại phòng theo giá và sức chứa.</td>
+                    <td>RoomType model, database/schema.sql</td>
+                </tr>
+                <tr>
+                    <td><strong>Invoice</strong></td>
+                    <td>Hóa đơn ghi nhận phí phòng, dịch vụ, thuế, chiết khấu.</td>
+                    <td>Invoice model, invoices/*</td>
+                </tr>
+                <tr>
+                    <td><strong>Service</strong></td>
+                    <td>Dịch vụ bổ sung (giặt ủi, ăn sáng...) được thêm vào booking.</td>
+                    <td>Invoice.getBookingServices, services bảng</td>
+                </tr>
+                <tr>
+                    <td><strong>Deposit</strong></td>
+                    <td>Số tiền cọc ghi nhận tại thời điểm đặt phòng.</td>
+                    <td>Booking.total_price & deposit</td>
+                </tr>
+                <tr>
+                    <td><strong>Role</strong></td>
+                    <td>Vai trò người dùng trong hệ thống (admin, manager, receptionist).</td>
+                    <td>users.role, middleware/auth.js</td>
+                </tr>
+                <tr>
+                    <td><strong>Dashboard</strong></td>
+                    <td>Màn hình tổng quan chứa các chỉ số điều hành.</td>
+                    <td>dashboard/index.ejs</td>
+                </tr>
+                <tr>
+                    <td><strong>Revenue report</strong></td>
+                    <td>Báo cáo doanh thu theo khoảng ngày.</td>
+                    <td>InvoiceController.showReport</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3 class="sub-title" id="non-functional">1.3 Thông số kỹ thuật bổ sung</h3>
+        <ul>
+            <li><strong>Bảo mật:</strong> mật khẩu người dùng được băm bằng bcrypt với salt 10 vòng (src/controllers/authController.js). Session lưu bằng express-session với cookie 24 giờ.</li>
+            <li><strong>Hiệu năng:</strong> Mysql2 sử dụng connection pool (10 kết nối) giúp phục vụ đồng thời nhiều yêu cầu (src/config/database.js).</li>
+            <li><strong>Tính sẵn sàng:</strong> Các thao tác CRUD đều sử dụng async/await và xử lý lỗi tập trung, đảm bảo hệ thống không bị treo khi lỗi DB.</li>
+            <li><strong>Tính dễ dùng:</strong> Giao diện thống nhất với các badge màu phân biệt trạng thái, thông báo thành công bằng query string `success` (layout.ejs).</li>
+            <li><strong>Bảo trì:</strong> Kiến trúc MVC rõ ràng (models/controllers/routes/views), dễ mở rộng thêm module mới.</li>
+            <li><strong>Tuân thủ pháp lý:</strong> Hệ thống lưu lịch sử hóa đơn, hỗ trợ đối soát và truy xuất khi cần.</li>
+        </ul>
+
+        <h3 class="sub-title" id="functional">1.4 Ma trận yêu cầu chức năng</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Mã</th>
+                    <th>Mô tả</th>
+                    <th>Thành phần chịu trách nhiệm</th>
+                    <th>Ưu tiên</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="requirement-id">FR-01</td>
+                    <td>Người dùng đăng nhập, đổi mật khẩu, đăng xuất an toàn.</td>
+                    <td>authController, middleware/auth.js</td>
+                    <td><span class="badge high">Cao</span></td>
+                </tr>
+                <tr>
+                    <td class="requirement-id">FR-02</td>
+                    <td>Quản lý danh sách phòng (thêm, sửa, xóa, xem chi tiết).</td>
+                    <td>roomController, rooms/*.ejs</td>
+                    <td><span class="badge high">Cao</span></td>
+                </tr>
+                <tr>
+                    <td class="requirement-id">FR-03</td>
+                    <td>Tìm phòng trống theo khoảng thời gian.</td>
+                    <td>Room.getAvailableRooms, rooms/available.ejs</td>
+                    <td><span class="badge high">Cao</span></td>
+                </tr>
+                <tr>
+                    <td class="requirement-id">FR-04</td>
+                    <td>Quản lý thông tin khách (CRUD, tìm kiếm nhiều tiêu chí).</td>
+                    <td>customerController, customers/*.ejs</td>
+                    <td><span class="badge high">Cao</span></td>
+                </tr>
+                <tr>
+                    <td class="requirement-id">FR-05</td>
+                    <td>Tạo đặt phòng mới, tính tiền phòng theo số đêm.</td>
+                    <td>bookingController.create, Booking.calculateRoomCharge</td>
+                    <td><span class="badge high">Cao</span></td>
+                </tr>
+                <tr>
+                    <td class="requirement-id">FR-06</td>
+                    <td>Theo dõi và cập nhật trạng thái booking (pending → confirmed → checked_in → checked_out).</td>
+                    <td>Booking model, bookingController</td>
+                    <td><span class="badge high">Cao</span></td>
+                </tr>
+                <tr>
+                    <td class="requirement-id">FR-07</td>
+                    <td>Lập hóa đơn, tính thuế, chiết khấu, ghi nhận thanh toán.</td>
+                    <td>invoiceController.create, Invoice model</td>
+                    <td><span class="badge high">Cao</span></td>
+                </tr>
+                <tr>
+                    <td class="requirement-id">FR-08</td>
+                    <td>Ghi nhận dịch vụ phát sinh theo booking.</td>
+                    <td>Invoice.addBookingService, services bảng</td>
+                    <td><span class="badge medium">Trung bình</span></td>
+                </tr>
+                <tr>
+                    <td class="requirement-id">FR-09</td>
+                    <td>Xem báo cáo doanh thu theo khoảng thời gian, tổng hợp số liệu.</td>
+                    <td>InvoiceController.showReport, invoices/report.ejs</td>
+                    <td><span class="badge medium">Trung bình</span></td>
+                </tr>
+                <tr>
+                    <td class="requirement-id">FR-10</td>
+                    <td>Dashboard hiển thị số phòng theo trạng thái, booking hôm nay, doanh thu tháng.</td>
+                    <td>dashboardController.index, dashboard/index.ejs</td>
+                    <td><span class="badge medium">Trung bình</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4 class="sub-sub-title" id="usecase-diagram">1.4.2 Sơ đồ Use-case</h4>
+        <p>Các tác nhân chính (Admin, Quản lý, Lễ tân, Kế toán) tương tác với cụm chức năng tương ứng thông qua tuyến router Express. Sơ đồ dưới đây minh họa mối liên hệ giữa tác nhân và các màn hình chức năng trong hệ thống.</p>
+        <figure>
+            <img src="images/dashboard.png" alt="Dashboard tổng quan hệ thống">
+            <figcaption>Hình 1. Giao diện Dashboard đại diện cho phạm vi use-case chính.</figcaption>
+        </figure>
+
+        <h3 class="sub-title" id="usecase-detail">1.5 Mô tả các Use-case</h3>
+
+        <h4 class="sub-sub-title">1.5.1 UC1 – Quản lý đặt phòng</h4>
+        <table>
+            <tbody>
+                <tr>
+                    <td><strong>Tên Use-case</strong></td>
+                    <td>UC1 – Tạo và xử lý đặt phòng</td>
+                </tr>
+                <tr>
+                    <td><strong>Tác nhân chính</strong></td>
+                    <td>Nhân viên lễ tân (receptionist)</td>
+                </tr>
+                <tr>
+                    <td><strong>Tác nhân phụ</strong></td>
+                    <td>Khách hàng (cung cấp thông tin), Quản lý (duyệt nếu cần)</td>
+                </tr>
+                <tr>
+                    <td><strong>Tiền điều kiện</strong></td>
+                    <td>Nhân viên đã đăng nhập; thông tin phòng và khách hàng tồn tại trong hệ thống.</td>
+                </tr>
+                <tr>
+                    <td><strong>Hậu điều kiện</strong></td>
+                    <td>Booking được lưu với trạng thái <em>pending</em>; phòng chuyển sang <em>reserved</em>.</td>
+                </tr>
+                <tr>
+                    <td><strong>Luồng chính</strong></td>
+                    <td>
+                        <ol>
+                            <li>Nhân viên mở menu “Đặt phòng” và chọn “Tạo booking mới”.</li>
+                            <li>Hệ thống tải danh sách khách hàng, phòng đang trống (Room.getByStatus('available')).</li>
+                            <li>Nhân viên nhập thông tin lịch ở, số người, tiền đặt cọc.</li>
+                            <li>Hệ thống tính tổng tiền dựa trên số đêm (Booking.calculateRoomCharge).</li>
+                            <li>Nhân viên xác nhận, hệ thống tạo bản ghi booking và update trạng thái phòng.</li>
+                        </ol>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Luồng thay thế</strong></td>
+                    <td>
+                        <ul>
+                            <li><em>Khách chưa có hồ sơ:</em> nhân viên chuyển sang màn “Thêm khách hàng” rồi quay lại.</li>
+                            <li><em>Phòng bị trùng:</em> hệ thống thông báo và yêu cầu chọn phòng khác.</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Ngoại lệ</strong></td>
+                    <td>Không kết nối được database; thông tin ngày check-out trước check-in.</td>
+                </tr>
+                <tr>
+                    <td><strong>Độ ưu tiên</strong></td>
+                    <td><span class="badge high">Cao</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Quy tắc nghiệp vụ</strong></td>
+                    <td>Ngày check-out > check-in; số người không vượt quá sức chứa phòng; tiền đặt cọc không âm.</td>
+                </tr>
+                <tr>
+                    <td><strong>Ghi chú</strong></td>
+                    <td>BookingController liên kết với Session để ghi nhận user tạo booking.</td>
+                </tr>
+            </tbody>
+        </table>
+        <figure>
+            <img src="images/bookings.png" alt="Màn hình quản lý đặt phòng">
+            <figcaption>Hình 2. Danh sách và bộ lọc trạng thái đặt phòng.</figcaption>
+        </figure>
+        <figure>
+            <img src="images/booking-detail.png" alt="Chi tiết đặt phòng">
+            <figcaption>Hình 3. Chi tiết booking giúp theo dõi luồng xử lý.</figcaption>
+        </figure>
+        <h4 class="sub-sub-title">1.5.2 UC2 – Lập và thanh toán hóa đơn</h4>
+        <table>
+            <tbody>
+                <tr>
+                    <td><strong>Tên Use-case</strong></td>
+                    <td>UC2 – Phát hành hóa đơn thanh toán</td>
+                </tr>
+                <tr>
+                    <td><strong>Tác nhân chính</strong></td>
+                    <td>Nhân viên kế toán / lễ tân</td>
+                </tr>
+                <tr>
+                    <td><strong>Tác nhân phụ</strong></td>
+                    <td>Khách hàng (xác nhận thông tin), Quản lý (giám sát doanh thu)</td>
+                </tr>
+                <tr>
+                    <td><strong>Tiền điều kiện</strong></td>
+                    <td>Booking ở trạng thái <em>checked_in</em>; dữ liệu dịch vụ phát sinh được nhập đầy đủ.</td>
+                </tr>
+                <tr>
+                    <td><strong>Hậu điều kiện</strong></td>
+                    <td>Hóa đơn được tạo; trạng thái thanh toán cập nhật; phòng trở lại <em>available</em> nếu đã thanh toán.</td>
+                </tr>
+                <tr>
+                    <td><strong>Luồng chính</strong></td>
+                    <td>
+                        <ol>
+                            <li>Nhân viên chọn booking và mở chức năng “Tạo hóa đơn”.</li>
+                            <li>Hệ thống tự động lấy phí phòng, dịch vụ, tính thuế VAT 10%.</li>
+                            <li>Nhân viên nhập khoản đã thu, phương thức thanh toán.</li>
+                            <li>Hệ thống xác định trạng thái thanh toán (paid/partial/unpaid) và lưu hóa đơn.</li>
+                            <li>Nếu đã thanh toán đủ, hệ thống gọi Booking.checkOut để mở trạng thái phòng.</li>
+                        </ol>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Luồng thay thế</strong></td>
+                    <td>
+                        <ul>
+                            <li><em>Thanh toán từng phần:</em> hệ thống ghi nhận trạng thái <em>partial</em>, cho phép lần thanh toán tiếp theo.</li>
+                            <li><em>Thêm dịch vụ phát sinh:</em> nhân viên dùng chức năng AddService trước khi lập hóa đơn.</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Ngoại lệ</strong></td>
+                    <td>Hóa đơn đã tồn tại cho booking; dữ liệu dịch vụ bị thiếu giá.</td>
+                </tr>
+                <tr>
+                    <td><strong>Độ ưu tiên</strong></td>
+                    <td><span class="badge high">Cao</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Quy tắc nghiệp vụ</strong></td>
+                    <td>VAT mặc định 10%; trạng thái booking chỉ chuyển sang checked_out khi trạng thái thanh toán là paid.</td>
+                </tr>
+                <tr>
+                    <td><strong>Ghi chú</strong></td>
+                    <td>InvoiceController phối hợp với Invoice và Booking model để đảm bảo tính toàn vẹn.</td>
+                </tr>
+            </tbody>
+        </table>
+        <figure>
+            <img src="images/uml/thanh-toan-hoa-don.png" alt="Bieu do tuan tu UC2 - Thanh toan hoa don">
+            <figcaption>Hình 4. Bieu do tuan tu UC2 - Thanh toan hoa don.</figcaption>
+        </figure>
+    </div>
+
+    <div class="page" id="phan-tich-usecase">
+        <h2 class="section-title">2. PHÂN TÍCH TRƯỜNG HỢP SỬ DỤNG (USE-CASE ANALYSIS)</h2>
+
+        <h3 class="sub-title">2.1 Phân tích kiến trúc hệ thống</h3>
+
+        <h4 class="sub-sub-title">2.1.1 Kiến trúc mức cao của hệ thống</h4>
+        <p>Hệ thống tuân thủ mô hình MVC:</p>
+        <ul>
+            <li><strong>View:</strong> Bộ giao diện EJS trong <code>src/views</code> dựng HTML động, dùng layout chung, bao gồm các partials (header, nav, footer).</li>
+            <li><strong>Controller:</strong> Xử lý nghiệp vụ và điều phối luồng (authController, roomController, bookingController...).</li>
+            <li><strong>Model:</strong> Lớp truy cập dữ liệu sử dụng mysql2/promise với truy vấn SQL thuần.</li>
+        </ul>
+        <p>Ứng dụng Express kết nối MySQL thông qua pool, sử dụng session để lưu trạng thái người dùng. Các tuyến đường (routes) ánh xạ rõ ràng tới controller tương ứng, đảm bảo phân tách trách nhiệm.</p>
+
+        <h4 class="sub-sub-title">2.1.2 Các đối tượng trừu tượng chính của hệ thống (Key abstractions)</h4>
+        <ul>
+            <li><strong>User:</strong> đại diện tài khoản nhân sự, lưu role và trạng thái (is_active).</li>
+            <li><strong>RoomType & Room:</strong> mô hình hóa tài sản phòng và thông tin giá, sức chứa.</li>
+            <li><strong>Customer:</strong> lưu hồ sơ khách, phục vụ tra cứu lịch sử.</li>
+            <li><strong>Booking:</strong> nắm giữ chu kỳ đặt phòng, liên kết người dùng tạo, phòng, khách.</li>
+            <li><strong>Service & BookingService:</strong> ghi nhận dịch vụ phát sinh trong thời gian lưu trú.</li>
+            <li><strong>Invoice:</strong> tập hợp dữ liệu tài chính và trạng thái thanh toán.</li>
+        </ul>
+
+        <figure>
+            <img src="images/uml/so-do-kien-truc-muc-cao.png" alt="So do kien truc muc cao cua he thong">
+            <figcaption>Hình 5. So do kien truc muc cao cua he thong.</figcaption>
+        </figure>
+
+        <h3 class="sub-title">2.2 Thực thi trường hợp sử dụng (Use-case realizations)</h3>
+
+        <h4 class="sub-sub-title">2.2.1 Các biểu đồ tuần tự (Sequence diagrams)</h4>
+        <p><strong>UC1 – Tạo booking:</strong></p>
+        <ol>
+            <li><em>View bookings/create.ejs</em> gửi yêu cầu POST tới <code>/bookings</code>.</li>
+            <li><em>bookingController.create</em> gọi <code>Room.getById</code> để lấy giá phòng.</li>
+            <li>Controller sử dụng <code>Booking.calculateRoomCharge</code> để tính tiền.</li>
+            <li>Controller lưu booking qua <code>Booking.create</code>; model cập nhật trạng thái phòng.</li>
+            <li>Controller phản hồi redirect với thông điệp thành công cho view.</li>
+        </ol>
+        <p><strong>UC2 – Thanh toán hóa đơn:</strong></p>
+        <ol>
+            <li><em>View invoices/create.ejs</em> gửi yêu cầu POST với dữ liệu thanh toán.</li>
+            <li><em>invoiceController.create</em> chuẩn hóa số tiền, xác định trạng thái thanh toán.</li>
+            <li>Controller gọi <code>Invoice.create</code>; model ghi vào bảng invoices.</li>
+            <li>Nếu trạng thái là <em>paid</em>, controller kích hoạt <code>Booking.checkOut</code>.</li>
+            <li>Phản hồi redirect tới trang chi tiết hóa đơn.</li>
+        </ol>
+
+        <h4 class="sub-sub-title">2.2.2 Góc nhìn của các lớp trong hệ thống (Views of participating classes)</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Use-case</th>
+                    <th>Các lớp chính</th>
+                    <th>Vai trò</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>UC1 – Quản lý đặt phòng</td>
+                    <td>BookingController, Booking, Room, Customer</td>
+                    <td>Điều phối luồng nhập liệu, lưu dữ liệu, cập nhật trạng thái phòng và tra cứu khách.</td>
+                </tr>
+                <tr>
+                    <td>UC2 – Thanh toán hóa đơn</td>
+                    <td>InvoiceController, Invoice, Booking, Service</td>
+                    <td>Tổng hợp doanh thu, cập nhật thanh toán, đồng bộ trạng thái booking.</td>
+                </tr>
+                <tr>
+                    <td>Dashboard</td>
+                    <td>DashboardController, Booking, Room, Invoice</td>
+                    <td>Tính toán thống kê theo tháng, lọc dữ liệu theo ngày hiện tại.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <figure>
+            <img src="images/reports.png" alt="Báo cáo doanh thu">
+            <figcaption>Hình 6. Báo cáo doanh thu minh họa các dữ liệu được tổng hợp.</figcaption>
+        </figure>
+    </div>
+    <div class="page" id="thiet-ke">
+        <h2 class="section-title">3. THIẾT KẾ (USE-CASE DESIGN)</h2>
+
+        <h3 class="sub-title">3.1 Xác định các thành phần thiết kế (Identify design elements)</h3>
+
+        <h4 class="sub-sub-title">3.1.1 Xác định các lớp (Identify classes)</h4>
+        <ul>
+            <li><code>User</code>: quản lý tài khoản, thay đổi mật khẩu, trạng thái hoạt động.</li>
+            <li><code>Room</code>: truy vấn phòng, cập nhật trạng thái, tính toán thống kê.</li>
+            <li><code>RoomType</code>: thông tin mô tả và giá cơ bản.</li>
+            <li><code>Customer</code>: thao tác CRUD khách hàng và lịch sử booking.</li>
+            <li><code>Booking</code>: luồng nghiệp vụ đặt phòng, chuyển trạng thái.</li>
+            <li><code>Invoice</code>: quản lý hóa đơn, dịch vụ, thống kê doanh thu.</li>
+            <li><code>Service</code>: danh mục dịch vụ bổ trợ.</li>
+        </ul>
+
+        <h4 class="sub-sub-title">3.1.2 Xác định các hệ thống con và giao diện (Identify subsystems and interfaces)</h4>
+        <ul>
+            <li><strong>Authentication subsystem:</strong> routes/index.js + authController.</li>
+            <li><strong>Room management subsystem:</strong> routes/rooms.js + roomController.</li>
+            <li><strong>Booking subsystem:</strong> routes/bookings.js + bookingController.</li>
+            <li><strong>Billing subsystem:</strong> routes/invoices.js + invoiceController.</li>
+            <li><strong>Reporting subsystem:</strong> invoices/report.ejs (front-end) + Invoice model.</li>
+        </ul>
+
+        <h4 class="sub-sub-title">3.1.3 Xác định các gói (Identify packages)</h4>
+        <div class="code-block">
+├── app.js<br>
+├── src/<br>
+│   ├── config/<br>
+│   ├── controllers/<br>
+│   ├── middleware/<br>
+│   ├── models/<br>
+│   ├── routes/<br>
+│   └── views/<br>
+├── public/<br>
+│   ├── css/<br>
+│   ├── images/<br>
+│   └── js/<br>
+└── database/schema.sql
+        </div>
+
+        <h3 class="sub-title">3.2 Thiết kế trường hợp sử dụng (Use-case design)</h3>
+
+        <h4 class="sub-sub-title">3.2.1 Thiết kế các biểu đồ tuần tự (Design sequence diagrams)</h4>
+        <p>Các trình tự chi tiết đã được mô tả ở mục 2.2.1. Mỗi thông điệp được thực thi tương ứng với lời gọi hàm trong controller/model, đảm bảo đơn trách nhiệm.</p>
+
+        <h4 class="sub-sub-title">3.2.2 Thiết kế biểu đồ lớp (Class diagrams)</h4>
+        <p>Các lớp model tương ứng với bảng cơ sở dữ liệu, cung cấp phương thức CRUD và thống kê. Controller sử dụng model thông qua phương thức tĩnh, giúp đơn giản hóa việc inject. Ưu điểm: dễ mở rộng thêm trường dữ liệu mà không ảnh hưởng giao diện.</p>
+
+        <figure>
+            <img src="images/uml/class-diagram.png" alt="So do lop tong quan cua he thong">
+            <figcaption>Hình 7. So do lop tong quan cua he thong.</figcaption>
+        </figure>
+
+        <h3 class="sub-title">3.3 Thiết kế cơ sở dữ liệu (Database design)</h3>
+
+        <h4 class="sub-sub-title">3.3.1 Lược đồ cơ sở dữ liệu</h4>
+        <ul>
+            <li>Quan hệ 1-n giữa <code>room_types</code> và <code>rooms</code>.</li>
+            <li><code>bookings</code> liên kết <code>customers</code>, <code>rooms</code>, <code>users</code>.</li>
+            <li><code>invoices</code> ràng buộc <code>bookings</code>, lưu trạng thái thanh toán.</li>
+            <li><code>booking_services</code> làm bảng nối giữa booking và service.</li>
+        </ul>
+
+        <h4 class="sub-sub-title">3.3.2 Chi tiết các bảng</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Bảng</th>
+                    <th>Các cột chính</th>
+                    <th>Ghi chú</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>users</strong></td>
+                    <td>username, password (bcrypt), role, is_active</td>
+                    <td>Lưu thông tin đăng nhập và phân quyền.</td>
+                </tr>
+                <tr>
+                    <td><strong>room_types</strong></td>
+                    <td>type_name, base_price, max_occupancy</td>
+                    <td>Chuẩn hóa dữ liệu giá phòng.</td>
+                </tr>
+                <tr>
+                    <td><strong>rooms</strong></td>
+                    <td>room_number, type_id (FK), status</td>
+                    <td>Quản lý tồn kho phòng, ràng buộc với loại phòng.</td>
+                </tr>
+                <tr>
+                    <td><strong>customers</strong></td>
+                    <td>full_name, id_card, phone, nationality</td>
+                    <td>Hiện thực hóa hồ sơ khách.</td>
+                </tr>
+                <tr>
+                    <td><strong>bookings</strong></td>
+                    <td>customer_id, room_id, check_in/out, total_price, status</td>
+                    <td>Bảng trung tâm của nghiệp vụ khách lưu trú.</td>
+                </tr>
+                <tr>
+                    <td><strong>services</strong></td>
+                    <td>service_name, price, unit, is_active</td>
+                    <td>Danh mục dịch vụ bán kèm.</td>
+                </tr>
+                <tr>
+                    <td><strong>booking_services</strong></td>
+                    <td>booking_id, service_id, quantity, total_price</td>
+                    <td>Lưu dịch vụ phát sinh cho từng booking.</td>
+                </tr>
+                <tr>
+                    <td><strong>invoices</strong></td>
+                    <td>booking_id, room_charge, service_charge, tax, payment_status</td>
+                    <td>Ghi nhận hóa đơn và trạng thái thanh toán.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="page" id="cai-dat">
+        <h2 class="section-title">4. CÀI ĐẶT (IMPLEMENTATION)</h2>
+
+        <h3 class="sub-title">4.1 Lựa chọn công nghệ</h3>
+        <ul>
+            <li><strong>Node.js 18+</strong>: môi trường chạy JavaScript phía server.</li>
+            <li><strong>Express 4.18</strong>: framework tối giản cho routing và middleware.</li>
+            <li><strong>EJS</strong>: template engine dựng HTML động, dễ chèn dữ liệu.</li>
+            <li><strong>mysql2/promise</strong>: driver MySQL hiệu năng cao, hỗ trợ async/await.</li>
+            <li><strong>express-session</strong>: quản lý phiên đăng nhập.</li>
+            <li><strong>bcryptjs</strong>: mã hóa mật khẩu.</li>
+            <li><strong>method-override</strong>: hỗ trợ PUT/DELETE từ form HTML truyền thống.</li>
+            <li><strong>moment.js</strong>: định dạng ngày trên giao diện.</li>
+        </ul>
+
+        <h3 class="sub-title">4.2 Cấu trúc mã nguồn & điểm nhấn</h3>
+        <ul>
+            <li><code>app.js</code> cấu hình middleware, static asset, session và khai báo routes.</li>
+            <li><code>src/controllers</code> chứa nghiệp vụ – mỗi controller tương ứng một module giao diện.</li>
+            <li><code>src/models</code> đóng gói truy vấn SQL, giúp tái sử dụng và kiểm soát lỗi tập trung.</li>
+            <li><code>public/css/style.css</code> định nghĩa phong cách giao diện, badge trạng thái.</li>
+            <li><code>database/schema.sql</code> cung cấp toàn bộ lược đồ và dữ liệu mẫu phục vụ demo.</li>
+        </ul>
+
+        <div class="note">
+            <strong>Hạn chế hiện tại:</strong> Chưa có kiểm thử tự động, chưa validate dữ liệu phía server (ví dụ: định dạng email, số điện thoại). Không có ghi log chi tiết cho các lỗi SQL phức tạp.
+        </div>
+
+        <figure>
+            <img src="images/add-room.png" alt="Thêm phòng mới">
+            <figcaption>Hình 8. Form thêm phòng mới hỗ trợ chọn loại phòng.</figcaption>
+        </figure>
+        <figure>
+            <img src="images/add-customer.png" alt="Thêm khách hàng mới">
+            <figcaption>Hình 9. Form thêm khách hàng với các trường thông tin bắt buộc.</figcaption>
+        </figure>
+    </div>
+
+    <div class="page" id="ket-luan">
+        <h2 class="section-title">5. KẾT LUẬN</h2>
+        <p>Hệ thống quản lý khách sạn hiện thực đầy đủ chu trình nghiệp vụ lõi: từ quản lý phòng, khách, đặt phòng tới lập hóa đơn và báo cáo. Kiến trúc MVC rõ ràng giúp dễ dàng bảo trì, trong khi việc sử dụng MySQL và session đảm bảo dữ liệu đồng nhất. Các giao diện EJS trực quan hỗ trợ người dùng thao tác nhanh.</p>
+        <p>Trong tương lai, dự án có thể mở rộng theo hướng:</p>
+        <ul>
+            <li>Tích hợp biểu đồ trực quan cho dashboard bằng thư viện chart.</li>
+            <li>Bổ sung API REST để hỗ trợ ứng dụng di động hoặc đặt phòng trực tuyến.</li>
+            <li>Thêm kiểm thử tích hợp/đơn vị và ràng buộc dữ liệu mạnh hơn.</li>
+            <li>Triển khai gửi email xác nhận booking và hóa đơn.</li>
+        </ul>
+    </div>
+
+    <div class="page" id="tai-lieu-tham-khao">
+        <h2 class="section-title">TÀI LIỆU THAM KHẢO</h2>
+        <ol>
+            <li>Express.js Documentation – <a href="https://expressjs.com/" target="_blank" rel="noopener">https://expressjs.com/</a></li>
+            <li>MySQL 8.0 Reference Manual – <a href="https://dev.mysql.com/doc/" target="_blank" rel="noopener">https://dev.mysql.com/doc/</a></li>
+            <li>bcryptjs GitHub – <a href="https://github.com/dcodeIO/bcrypt.js" target="_blank" rel="noopener">https://github.com/dcodeIO/bcrypt.js</a></li>
+            <li>Moment.js Documentation – <a href="https://momentjs.com/" target="_blank" rel="noopener">https://momentjs.com/</a></li>
+        </ol>
+    </div>
+    <div class="page" id="phu-luc">
+        <h2 class="section-title">PHỤ LỤC</h2>
+
+        <h3 class="sub-title">A. Hướng dẫn triển khai</h3>
+        <ol>
+            <li>Cài đặt Node.js (>= 18) và MySQL.</li>
+            <li>Chạy <code>npm install</code> trong thư mục dự án.</li>
+            <li>Cấu hình tệp <code>.env</code> với thông số kết nối MySQL và SESSION_SECRET.</li>
+            <li>Import <code>database/schema.sql</code> vào MySQL.</li>
+            <li>Khởi động ứng dụng: <code>npm start</code>.</li>
+        </ol>
+
+        <h3 class="sub-title">B. Giao diện minh họa</h3>
+        <figure>
+            <img src="images/customers.png" alt="Danh sách khách hàng">
+            <figcaption>Hình 10. Danh sách khách hàng kèm chức năng tìm kiếm.</figcaption>
+        </figure>
+        <figure>
+            <img src="images/room-detail.png" alt="Chi tiết phòng">
+            <figcaption>Hình 11. Chi tiết phòng và trạng thái hiện tại.</figcaption>
+        </figure>
+        <figure>
+            <img src="images/customer-detail.png" alt="Chi tiết khách hàng">
+            <figcaption>Hình 12. Hồ sơ khách hàng với lịch sử đặt phòng.</figcaption>
+        </figure>
+        <figure>
+            <img src="images/reports.png" alt="Báo cáo doanh thu">
+            <figcaption>Hình 13. Báo cáo doanh thu theo ngày.</figcaption>
+        </figure>
+    </div>
+
+    <footer>
+        Báo cáo được sinh tự động dựa trên mã nguồn dự án DoAn_QuanLyKhachSan.
+    </footer>
+</body>
+</html>
