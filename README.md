@@ -353,10 +353,10 @@ Error: Cannot find module 'express'
 
 ## 👨‍💻 Tác Giả
 
-**[Tên Sinh Viên]**
-- MSSV: [Mã Số Sinh Viên]
-- Lớp: [Tên Lớp]
-- Email: [Email]
+**[Ngô Ngọc Duy]**
+- MSSV: [23010397]
+**[Nguyễn Văn Thành]**
+- MSSV: [23010764]
 
 **Giảng viên hướng dẫn:** [Tên Giảng Viên]
 
@@ -370,10 +370,8 @@ Dự án này được phát triển cho mục đích học tập.
 
 ## 🙏 Lời Cảm Ơn
 
-Cảm ơn thầy/cô giảng viên đã hướng dẫn và hỗ trợ trong quá trình thực hiện đồ án.
+Cảm ơn thầy giảng viên đã hướng dẫn và hỗ trợ trong quá trình thực hiện đồ án.
 
 ---
 
-## 📞 Liên Hệ
 
-Nếu có bất kỳ thắc mắc hoặc góp ý, vui lòng liên hệ qua email: [your-email@example.com]
