@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Đặt Phòng</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    <%- include('../partials/nav') %>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-between align-center">
+                        <h2>📅 Danh Sách Đặt Phòng</h2>
+                        <a href="/bookings/create" class="btn btn-primary">+ Tạo Booking Mới</a>
+                    </div>
+                </div>
+
+                <div class="mb-3" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <a href="/bookings" class="btn <%= !status ? 'btn-primary' : 'btn-secondary' %> btn-sm">Tất Cả</a>
+                    <a href="/bookings?status=pending" class="btn <%= status === 'pending' ? 'btn-warning' : 'btn-secondary' %> btn-sm">Chờ Xác Nhận</a>
+                    <a href="/bookings?status=confirmed" class="btn <%= status === 'confirmed' ? 'btn-info' : 'btn-secondary' %> btn-sm">Đã Xác Nhận</a>
+                    <a href="/bookings?status=checked_in" class="btn <%= status === 'checked_in' ? 'btn-success' : 'btn-secondary' %> btn-sm">Đã Nhận Phòng</a>
+                    <a href="/bookings?status=checked_out" class="btn <%= status === 'checked_out' ? 'btn-secondary' : 'btn-secondary' %> btn-sm">Đã Trả Phòng</a>
+                    <a href="/bookings?status=cancelled" class="btn <%= status === 'cancelled' ? 'btn-danger' : 'btn-secondary' %> btn-sm">Đã Hủy</a>
+                </div>
+
+                <% if (bookings.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Mã</th>
+                                    <th>Khách Hàng</th>
+                                    <th>SĐT</th>
+                                    <th>Phòng</th>
+                                    <th>Check-in</th>
+                                    <th>Check-out</th>
+                                    <th>Tổng Tiền</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% bookings.forEach(booking => { %>
+                                    <tr>
+                                        <td><strong>#<%= booking.booking_id %></strong></td>
+                                        <td><%= booking.full_name %></td>
+                                        <td><%= booking.phone %></td>
+                                        <td><%= booking.room_number %></td>
+                                        <td><%= moment(booking.check_in_date).format('DD/MM/YYYY') %></td>
+                                        <td><%= moment(booking.check_out_date).format('DD/MM/YYYY') %></td>
+                                        <td><%= formatCurrency(booking.total_price) %></td>
+                                        <td>
+                                            <% if (booking.status === 'pending') { %>
+                                                <span class="badge badge-warning">Chờ xác nhận</span>
+                                            <% } else if (booking.status === 'confirmed') { %>
+                                                <span class="badge badge-info">Đã xác nhận</span>
+                                            <% } else if (booking.status === 'checked_in') { %>
+                                                <span class="badge badge-success">Đã nhận phòng</span>
+                                            <% } else if (booking.status === 'checked_out') { %>
+                                                <span class="badge badge-secondary">Đã trả phòng</span>
+                                            <% } else if (booking.status === 'cancelled') { %>
+                                                <span class="badge badge-danger">Đã hủy</span>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <a href="/bookings/<%= booking.booking_id %>" class="btn btn-info btn-sm">Xem</a>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="mt-2"><strong>Tổng số:</strong> <%= bookings.length %> bookings</p>
+                <% } else { %>
+                    <p class="text-center" style="padding: 2rem; color: #7f8c8d;">
+                        Không có booking nào.
+                    </p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>

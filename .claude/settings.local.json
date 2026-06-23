@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p src/models src/controllers src/routes src/views src/config src/middleware public/css public/js public/images)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

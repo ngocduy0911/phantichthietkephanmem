@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Hóa Đơn</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    <%- include('../partials/nav') %>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>💰 Danh Sách Hóa Đơn</h2>
+                </div>
+
+                <% if (invoices.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Mã HĐ</th>
+                                    <th>Khách Hàng</th>
+                                    <th>Phòng</th>
+                                    <th>Ngày Tạo</th>
+                                    <th>Tổng Tiền</th>
+                                    <th>Đã Thanh Toán</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% invoices.forEach(invoice => { %>
+                                    <tr>
+                                        <td><strong>#<%= invoice.invoice_id %></strong></td>
+                                        <td><%= invoice.customer_name %></td>
+                                        <td><%= invoice.room_number %></td>
+                                        <td><%= moment(invoice.invoice_date).format('DD/MM/YYYY') %></td>
+                                        <td><%= formatCurrency(invoice.total_amount) %></td>
+                                        <td><%= formatCurrency(invoice.paid_amount) %></td>
+                                        <td>
+                                            <% if (invoice.payment_status === 'paid') { %>
+                                                <span class="badge badge-success">Đã thanh toán</span>
+                                            <% } else if (invoice.payment_status === 'partial') { %>
+                                                <span class="badge badge-warning">Thanh toán 1 phần</span>
+                                            <% } else if (invoice.payment_status === 'unpaid') { %>
+                                                <span class="badge badge-danger">Chưa thanh toán</span>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <a href="/invoices/<%= invoice.invoice_id %>" class="btn btn-info btn-sm">Xem</a>
+                                            <% if (invoice.payment_status !== 'paid') { %>
+                                                <a href="/invoices/<%= invoice.invoice_id %>/payment" class="btn btn-success btn-sm">Thanh Toán</a>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="mt-2"><strong>Tổng số:</strong> <%= invoices.length %> hóa đơn</p>
+                <% } else { %>
+                    <p class="text-center" style="padding: 2rem; color: #7f8c8d;">
+                        Chưa có hóa đơn nào.
+                    </p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>

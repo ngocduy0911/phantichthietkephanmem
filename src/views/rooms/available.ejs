@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm Phòng Trống</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    <%- include('../partials/nav') %>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>🔍 Tìm Phòng Trống</h2>
+                </div>
+
+                <form action="/rooms/available" method="GET" class="mb-3">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem; align-items: end;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="check_in_date">Ngày Nhận Phòng:</label>
+                            <input type="date" id="check_in_date" name="check_in_date" class="form-control" value="<%= check_in_date %>">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="check_out_date">Ngày Trả Phòng:</label>
+                            <input type="date" id="check_out_date" name="check_out_date" class="form-control" value="<%= check_out_date %>">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Tìm Kiếm</button>
+                    </div>
+                </form>
+
+                <% if (check_in_date && check_out_date) { %>
+                    <p class="mb-2">
+                        <strong>Kết quả tìm kiếm:</strong> <%= rooms.length %> phòng trống từ
+                        <%= moment(check_in_date).format('DD/MM/YYYY') %> đến
+                        <%= moment(check_out_date).format('DD/MM/YYYY') %>
+                    </p>
+                <% } %>
+
+                <% if (rooms.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Số Phòng</th>
+                                    <th>Loại Phòng</th>
+                                    <th>Tầng</th>
+                                    <th>Giá/Đêm</th>
+                                    <th>Sức Chứa</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% rooms.forEach(room => { %>
+                                    <tr>
+                                        <td><strong><%= room.room_number %></strong></td>
+                                        <td><%= room.type_name %></td>
+                                        <td>Tầng <%= room.floor %></td>
+                                        <td><%= formatCurrency(room.base_price) %></td>
+                                        <td><%= room.max_occupancy %> người</td>
+                                        <td>
+                                            <a href="/rooms/<%= room.room_id %>" class="btn btn-info btn-sm">Xem</a>
+                                            <% if (check_in_date && check_out_date) { %>
+                                                <a href="/bookings/create?room_id=<%= room.room_id %>&check_in_date=<%= check_in_date %>&check_out_date=<%= check_out_date %>" class="btn btn-success btn-sm">
+                                                    Đặt Phòng
+                                                </a>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } else { %>
+                    <p class="text-center" style="padding: 2rem; color: #7f8c8d;">
+                        <% if (check_in_date && check_out_date) { %>
+                            Không tìm thấy phòng trống trong khoảng thời gian này.
+                        <% } else { %>
+                            Vui lòng chọn ngày nhận phòng và trả phòng để tìm kiếm.
+                        <% } %>
+                    </p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>

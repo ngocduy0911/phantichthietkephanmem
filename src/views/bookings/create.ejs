@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo Booking Mới</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    <%- include('../partials/nav') %>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="card" style="max-width: 800px; margin: 0 auto;">
+                <div class="card-header">
+                    <h2>➕ Tạo Booking Mới</h2>
+                </div>
+
+                <% if (error) { %>
+                    <div class="alert alert-error">
+                        <%= error %>
+                    </div>
+                <% } %>
+
+                <form action="/bookings/create" method="POST">
+                    <h3 class="mb-2">Thông Tin Khách Hàng</h3>
+                    <div class="form-group">
+                        <label for="customer_id">Chọn Khách Hàng: *</label>
+                        <select id="customer_id" name="customer_id" class="form-control" required>
+                            <option value="">-- Chọn khách hàng --</option>
+                            <% customers.forEach(customer => { %>
+                                <option value="<%= customer.customer_id %>">
+                                    <%= customer.full_name %> - <%= customer.id_card %> - <%= customer.phone %>
+                                </option>
+                            <% }) %>
+                        </select>
+                        <small>Hoặc <a href="/customers/create" target="_blank">tạo khách hàng mới</a></small>
+                    </div>
+
+                    <h3 class="mb-2 mt-3">Thông Tin Phòng</h3>
+                    <div class="form-group">
+                        <label for="room_id">Chọn Phòng: *</label>
+                        <select id="room_id" name="room_id" class="form-control" required>
+                            <option value="">-- Chọn phòng --</option>
+                            <% rooms.forEach(room => { %>
+                                <option value="<%= room.room_id %>" <%= selectedRoomId == room.room_id ? 'selected' : '' %>>
+                                    Phòng <%= room.room_number %> - <%= room.type_name %> - <%= formatCurrency(room.base_price) %>/đêm
+                                </option>
+                            <% }) %>
+                        </select>
+                        <small>Hoặc <a href="/rooms/available" target="_blank">tìm phòng trống</a></small>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="check_in_date">Ngày Nhận Phòng: *</label>
+                            <input type="date" id="check_in_date" name="check_in_date" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="check_out_date">Ngày Trả Phòng: *</label>
+                            <input type="date" id="check_out_date" name="check_out_date" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="num_adults">Số Người Lớn:</label>
+                            <input type="number" id="num_adults" name="num_adults" class="form-control" value="1" min="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="num_children">Số Trẻ Em:</label>
+                            <input type="number" id="num_children" name="num_children" class="form-control" value="0" min="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deposit">Đặt Cọc:</label>
+                        <input type="number" id="deposit" name="deposit" class="form-control" value="0" min="0" step="10000">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Ghi Chú:</label>
+                        <textarea id="notes" name="notes" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Tạo Booking</button>
+                        <a href="/bookings" class="btn btn-secondary">Hủy</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>

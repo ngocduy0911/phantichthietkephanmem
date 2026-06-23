@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    <%- include('../partials/nav') %>
+
+    <div class="main-content">
+        <div class="container">
+            <h1 class="mb-3">📊 Dashboard</h1>
+
+            <!-- Thống kê phòng -->
+            <div class="stats-grid">
+                <div class="stat-card" style="border-left-color: #27ae60;">
+                    <h3>Phòng Trống</h3>
+                    <div class="stat-value"><%= roomStats.available || 0 %></div>
+                </div>
+                <div class="stat-card" style="border-left-color: #e74c3c;">
+                    <h3>Phòng Đang Thuê</h3>
+                    <div class="stat-value"><%= roomStats.occupied || 0 %></div>
+                </div>
+                <div class="stat-card" style="border-left-color: #f39c12;">
+                    <h3>Phòng Đã Đặt</h3>
+                    <div class="stat-value"><%= roomStats.reserved || 0 %></div>
+                </div>
+                <div class="stat-card" style="border-left-color: #95a5a6;">
+                    <h3>Phòng Bảo Trì</h3>
+                    <div class="stat-value"><%= roomStats.maintenance || 0 %></div>
+                </div>
+            </div>
+
+            <!-- Thống kê tháng này -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>📈 Thống Kê Tháng Này</h2>
+                </div>
+                <div class="stats-grid">
+                    <div>
+                        <h3 style="color: #7f8c8d; font-size: 0.9rem;">Tổng Bookings</h3>
+                        <p style="font-size: 1.8rem; font-weight: bold; color: #2c3e50;">
+                            <%= monthlyBookingStats.total_bookings || 0 %>
+                        </p>
+                    </div>
+                    <div>
+                        <h3 style="color: #7f8c8d; font-size: 0.9rem;">Doanh Thu</h3>
+                        <p style="font-size: 1.8rem; font-weight: bold; color: #27ae60;">
+                            <%= formatCurrency(monthlyRevenueStats.paid_revenue || 0) %>
+                        </p>
+                    </div>
+                    <div>
+                        <h3 style="color: #7f8c8d; font-size: 0.9rem;">Hóa Đơn Đã Thanh Toán</h3>
+                        <p style="font-size: 1.8rem; font-weight: bold; color: #3498db;">
+                            <%= monthlyRevenueStats.paid_count || 0 %>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bookings hôm nay -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>📅 Bookings Hôm Nay (<%= todayBookings.length %>)</h2>
+                </div>
+                <% if (todayBookings.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Phòng</th>
+                                    <th>Khách Hàng</th>
+                                    <th>SĐT</th>
+                                    <th>Check-in</th>
+                                    <th>Check-out</th>
+                                    <th>Trạng Thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% todayBookings.forEach(booking => { %>
+                                    <tr>
+                                        <td><%= booking.room_number %></td>
+                                        <td><%= booking.full_name %></td>
+                                        <td><%= booking.phone %></td>
+                                        <td><%= moment(booking.check_in_date).format('DD/MM/YYYY') %></td>
+                                        <td><%= moment(booking.check_out_date).format('DD/MM/YYYY') %></td>
+                                        <td>
+                                            <% if (booking.status === 'pending') { %>
+                                                <span class="badge badge-warning">Chờ xác nhận</span>
+                                            <% } else if (booking.status === 'confirmed') { %>
+                                                <span class="badge badge-info">Đã xác nhận</span>
+                                            <% } else if (booking.status === 'checked_in') { %>
+                                                <span class="badge badge-success">Đã nhận phòng</span>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } else { %>
+                    <p class="text-center" style="padding: 2rem; color: #7f8c8d;">Không có booking nào hôm nay</p>
+                <% } %>
+            </div>
+
+            <!-- Bookings sắp tới -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-between align-center">
+                        <h2>🔜 Bookings Sắp Tới</h2>
+                        <a href="/bookings" class="btn btn-primary btn-sm">Xem Tất Cả</a>
+                    </div>
+                </div>
+                <% if (upcomingBookings.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Phòng</th>
+                                    <th>Khách Hàng</th>
+                                    <th>Check-in</th>
+                                    <th>Check-out</th>
+                                    <th>Tổng Tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% upcomingBookings.forEach(booking => { %>
+                                    <tr>
+                                        <td><%= booking.room_number %></td>
+                                        <td><%= booking.full_name %></td>
+                                        <td><%= moment(booking.check_in_date).format('DD/MM/YYYY') %></td>
+                                        <td><%= moment(booking.check_out_date).format('DD/MM/YYYY') %></td>
+                                        <td><%= formatCurrency(booking.total_price) %></td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } else { %>
+                    <p class="text-center" style="padding: 2rem; color: #7f8c8d;">Không có booking sắp tới</p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>

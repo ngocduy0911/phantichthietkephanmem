@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Tiết Booking</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    <%- include('../partials/nav') %>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-between align-center">
+                        <h2>📋 Chi Tiết Booking #<%= booking.booking_id %></h2>
+                        <div class="d-flex gap-2">
+                            <% if (booking.status === 'pending') { %>
+                                <form action="/bookings/<%= booking.booking_id %>/confirm" method="POST" style="display: inline;">
+                                    <button type="submit" class="btn btn-success">Xác Nhận</button>
+                                </form>
+                            <% } %>
+                            <% if (booking.status === 'confirmed') { %>
+                                <form action="/bookings/<%= booking.booking_id %>/checkin" method="POST" style="display: inline;">
+                                    <button type="submit" class="btn btn-success">Check-in</button>
+                                </form>
+                            <% } %>
+                            <% if (booking.status === 'checked_in') { %>
+                                <form action="/bookings/<%= booking.booking_id %>/checkout" method="POST" style="display: inline;">
+                                    <button type="submit" class="btn btn-primary">Check-out</button>
+                                </form>
+                            <% } %>
+                            <% if (booking.status === 'pending' || booking.status === 'confirmed') { %>
+                                <form action="/bookings/<%= booking.booking_id %>/cancel" method="POST" style="display: inline;">
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc muốn hủy booking này?')">Hủy Booking</button>
+                                </form>
+                            <% } %>
+                            <a href="/bookings/<%= booking.booking_id %>/edit" class="btn btn-warning">Sửa</a>
+                            <a href="/bookings" class="btn btn-secondary">Quay Lại</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div>
+                        <h3 class="mb-2">Thông Tin Khách Hàng</h3>
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="padding: 0.5rem; font-weight: bold;">Họ Tên:</td>
+                                <td style="padding: 0.5rem;"><%= booking.full_name %></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; font-weight: bold;">CMND/CCCD:</td>
+                                <td style="padding: 0.5rem;"><%= booking.id_card %></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; font-weight: bold;">Số Điện Thoại:</td>
+                                <td style="padding: 0.5rem;"><%= booking.phone %></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; font-weight: bold;">Email:</td>
+                                <td style="padding: 0.5rem;"><%= booking.email || 'Không có' %></td>
+                            </tr>
+                        </table>
+
+                        <h3 class="mb-2 mt-3">Thông Tin Phòng</h3>
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="padding: 0.5rem; font-weight: bold;">Số Phòng:</td>
+                                <td style="padding: 0.5rem;"><%= booking.room_number %></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; font-weight: bold;">Loại Phòng:</td>
+                                <td style="padding: 0.5rem;"><%= booking.type_name %></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; font-weight: bold;">Giá:</td>
+                                <td style="padding: 0.5rem;"><%= formatCurrency(booking.base_price) %>/đêm</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div>
+                        <h3 class="mb-2">Thông Tin Booking</h3>
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="padding: 0.5rem; font-weight: bold;">Ngày Đặt:</td>
+                                <td style="padding: 0.5rem;"><%= moment(booking.booking_date).format('DD/MM/YYYY HH:mm') %></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; font-weight: bold;">Check-in:</td>
+                                <td style="padding: 0.5rem;"><%= moment(booking.check_in_date).format('DD/MM/YYYY') %></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; font-weight: bold;">Check-out:</td>
+                                <td style="padding: 0.5rem;"><%= moment(booking.check_out_date).format('DD/MM/YYYY') %></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; font-weight: bold;">Số Đêm:</td>
+                                <td style="padding: 0.5rem;">
+                                    <%= Math.ceil((new Date(booking.check_out_date) - new Date(booking.check_in_date)) / (1000 * 60 * 60 * 24)) %> đêm
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; font-weight: bold;">Số Người:</td>
+                                <td style="padding: 0.5rem;"><%= booking.num_adults %> người lớn, <%= booking.num_children %> trẻ em</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; font-weight: bold;">Tổng Tiền:</td>
+                                <td style="padding: 0.5rem;"><strong style="color: #27ae60; font-size: 1.2rem;"><%= formatCurrency(booking.total_price) %></strong></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; font-weight: bold;">Đặt Cọc:</td>
+                                <td style="padding: 0.5rem;"><%= formatCurrency(booking.deposit) %></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; font-weight: bold;">Trạng Thái:</td>
+                                <td style="padding: 0.5rem;">
+                                    <% if (booking.status === 'pending') { %>
+                                        <span class="badge badge-warning">Chờ xác nhận</span>
+                                    <% } else if (booking.status === 'confirmed') { %>
+                                        <span class="badge badge-info">Đã xác nhận</span>
+                                    <% } else if (booking.status === 'checked_in') { %>
+                                        <span class="badge badge-success">Đã nhận phòng</span>
+                                    <% } else if (booking.status === 'checked_out') { %>
+                                        <span class="badge badge-secondary">Đã trả phòng</span>
+                                    <% } else if (booking.status === 'cancelled') { %>
+                                        <span class="badge badge-danger">Đã hủy</span>
+                                    <% } %>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; font-weight: bold; vertical-align: top;">Ghi Chú:</td>
+                                <td style="padding: 0.5rem;"><%= booking.notes || 'Không có' %></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.5rem; font-weight: bold;">Nhân Viên Tạo:</td>
+                                <td style="padding: 0.5rem;"><%= booking.created_by_name %></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>

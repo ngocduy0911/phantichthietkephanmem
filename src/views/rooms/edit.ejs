@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sửa Phòng</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    <%- include('../partials/nav') %>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="card" style="max-width: 600px; margin: 0 auto;">
+                <div class="card-header">
+                    <h2>✏️ Sửa Thông Tin Phòng</h2>
+                </div>
+
+                <% if (error) { %>
+                    <div class="alert alert-error">
+                        <%= error %>
+                    </div>
+                <% } %>
+
+                <form action="/rooms/<%= room.room_id %>/edit" method="POST">
+                    <div class="form-group">
+                        <label for="room_number">Số Phòng: *</label>
+                        <input type="text" id="room_number" name="room_number" class="form-control" value="<%= room.room_number %>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="type_id">Loại Phòng: *</label>
+                        <select id="type_id" name="type_id" class="form-control" required>
+                            <% roomTypes.forEach(type => { %>
+                                <option value="<%= type.type_id %>" <%= type.type_id === room.type_id ? 'selected' : '' %>>
+                                    <%= type.type_name %> - <%= formatCurrency(type.base_price) %>
+                                </option>
+                            <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="floor">Tầng: *</label>
+                        <input type="number" id="floor" name="floor" class="form-control" value="<%= room.floor %>" min="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status">Trạng Thái: *</label>
+                        <select id="status" name="status" class="form-control" required>
+                            <option value="available" <%= room.status === 'available' ? 'selected' : '' %>>Trống</option>
+                            <option value="occupied" <%= room.status === 'occupied' ? 'selected' : '' %>>Đang thuê</option>
+                            <option value="reserved" <%= room.status === 'reserved' ? 'selected' : '' %>>Đã đặt</option>
+                            <option value="maintenance" <%= room.status === 'maintenance' ? 'selected' : '' %>>Bảo trì</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Mô Tả:</label>
+                        <textarea id="description" name="description" class="form-control" rows="3"><%= room.description || '' %></textarea>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Cập Nhật</button>
+                        <a href="/rooms" class="btn btn-secondary">Hủy</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>

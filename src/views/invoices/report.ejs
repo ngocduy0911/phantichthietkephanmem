@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo Cáo Doanh Thu</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    <%- include('../partials/nav') %>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>📈 Báo Cáo Doanh Thu</h2>
+                </div>
+
+                <form action="/invoices/report" method="GET" class="mb-3">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem; align-items: end;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="start_date">Từ Ngày:</label>
+                            <input type="date" id="start_date" name="start_date" class="form-control" value="<%= start_date %>">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="end_date">Đến Ngày:</label>
+                            <input type="date" id="end_date" name="end_date" class="form-control" value="<%= end_date %>">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Xem Báo Cáo</button>
+                    </div>
+                </form>
+
+                <% if (revenueData) { %>
+                    <div class="stats-grid" style="margin-bottom: 2rem;">
+                        <div class="stat-card">
+                            <h3>Tổng Doanh Thu</h3>
+                            <div class="stat-value" style="color: #3498db;"><%= formatCurrency(totalRevenue) %></div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Đã Thu</h3>
+                            <div class="stat-value" style="color: #27ae60;"><%= formatCurrency(totalPaid) %></div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Còn Nợ</h3>
+                            <div class="stat-value" style="color: #e74c3c;"><%= formatCurrency(totalRevenue - totalPaid) %></div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Số Hóa Đơn</h3>
+                            <div class="stat-value"><%= revenueData.length %></div>
+                        </div>
+                    </div>
+
+                    <% if (revenueData.length > 0) { %>
+                        <h3 class="mb-2">Chi Tiết Theo Ngày</h3>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Ngày</th>
+                                        <th>Số Hóa Đơn</th>
+                                        <th>Tổng Doanh Thu</th>
+                                        <th>Đã Thu</th>
+                                        <th>Còn Nợ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% revenueData.forEach(item => { %>
+                                        <tr>
+                                            <td><%= moment(item.date).format('DD/MM/YYYY') %></td>
+                                            <td><%= item.invoice_count %></td>
+                                            <td><%= formatCurrency(item.total_revenue) %></td>
+                                            <td style="color: #27ae60;"><%= formatCurrency(item.paid_revenue) %></td>
+                                            <td style="color: #e74c3c;"><%= formatCurrency(item.total_revenue - item.paid_revenue) %></td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                                <tfoot>
+                                    <tr style="background-color: #f8f9fa; font-weight: bold;">
+                                        <td>TỔNG CỘNG</td>
+                                        <td><%= revenueData.reduce((sum, item) => sum + item.invoice_count, 0) %></td>
+                                        <td><%= formatCurrency(totalRevenue) %></td>
+                                        <td style="color: #27ae60;"><%= formatCurrency(totalPaid) %></td>
+                                        <td style="color: #e74c3c;"><%= formatCurrency(totalRevenue - totalPaid) %></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    <% } else { %>
+                        <p class="text-center" style="padding: 2rem; color: #7f8c8d;">
+                            Không có dữ liệu trong khoảng thời gian này.
+                        </p>
+                    <% } %>
+                <% } else { %>
+                    <p class="text-center" style="padding: 2rem; color: #7f8c8d;">
+                        Vui lòng chọn khoảng thời gian để xem báo cáo.
+                    </p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>

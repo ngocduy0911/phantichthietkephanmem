@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Khách Hàng</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    <%- include('../partials/nav') %>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-between align-center">
+                        <h2>👥 Danh Sách Khách Hàng</h2>
+                        <a href="/customers/create" class="btn btn-primary">+ Thêm Khách Hàng</a>
+                    </div>
+                </div>
+
+                <form action="/customers" method="GET" class="mb-3">
+                    <div style="display: flex; gap: 1rem;">
+                        <input type="text" name="search" class="form-control" placeholder="Tìm kiếm theo tên, CMND, SĐT, email..." value="<%= search %>" style="flex: 1;">
+                        <button type="submit" class="btn btn-primary">Tìm Kiếm</button>
+                        <% if (search) { %>
+                            <a href="/customers" class="btn btn-secondary">Xóa Bộ Lọc</a>
+                        <% } %>
+                    </div>
+                </form>
+
+                <% if (customers.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Họ Tên</th>
+                                    <th>CMND/CCCD</th>
+                                    <th>SĐT</th>
+                                    <th>Email</th>
+                                    <th>Địa Chỉ</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% customers.forEach(customer => { %>
+                                    <tr>
+                                        <td><strong><%= customer.full_name %></strong></td>
+                                        <td><%= customer.id_card %></td>
+                                        <td><%= customer.phone %></td>
+                                        <td><%= customer.email || '-' %></td>
+                                        <td><%= customer.address || '-' %></td>
+                                        <td>
+                                            <a href="/customers/<%= customer.customer_id %>" class="btn btn-info btn-sm">Xem</a>
+                                            <a href="/customers/<%= customer.customer_id %>/edit" class="btn btn-warning btn-sm">Sửa</a>
+                                            <form action="/customers/<%= customer.customer_id %>/delete" method="POST" style="display: inline;">
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa khách hàng này?')">Xóa</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="mt-2"><strong>Tổng số:</strong> <%= customers.length %> khách hàng</p>
+                <% } else { %>
+                    <p class="text-center" style="padding: 2rem; color: #7f8c8d;">
+                        <% if (search) { %>
+                            Không tìm thấy khách hàng nào phù hợp với từ khóa "<%= search %>"
+                        <% } else { %>
+                            Chưa có khách hàng nào. Hãy thêm khách hàng mới.
+                        <% } %>
+                    </p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>

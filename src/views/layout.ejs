@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : 'Hệ Thống Quản Lý Khách Sạn' %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <% if (user) { %>
+        <%- include('partials/header') %>
+        <%- include('partials/nav') %>
+    <% } %>
+
+    <div class="main-content">
+        <div class="container">
+            <% if (success) { %>
+                <div class="alert alert-success">
+                    <% if (success === 'create') { %>
+                        Tạo mới thành công!
+                    <% } else if (success === 'update') { %>
+                        Cập nhật thành công!
+                    <% } else if (success === 'delete') { %>
+                        Xóa thành công!
+                    <% } else if (success === 'checkin') { %>
+                        Check-in thành công!
+                    <% } else if (success === 'checkout') { %>
+                        Check-out thành công!
+                    <% } else if (success === 'confirm') { %>
+                        Xác nhận booking thành công!
+                    <% } else if (success === 'cancel') { %>
+                        Hủy booking thành công!
+                    <% } else if (success === 'payment') { %>
+                        Thanh toán thành công!
+                    <% } else if (success === 'service') { %>
+                        Thêm dịch vụ thành công!
+                    <% } %>
+                </div>
+            <% } %>
+
+            <%- body %>
+        </div>
+    </div>
+
+    <% if (user) { %>
+        <%- include('partials/footer') %>
+    <% } %>
+</body>
+</html>
